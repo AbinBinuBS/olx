@@ -16,9 +16,7 @@ const SubHeader = () =>{
                 <h5 className="px-5">Commertial & Other Ve...</h5>
                 <h5 className="px-5">For Rent:House & Apart...</h5>
             </div>
-            <div>
-                <img className="px-24 py-12" src='../../../images/banner copy.png' alt=""/>
-            </div>
+            
         </div>
     )
 }

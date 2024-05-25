@@ -3,6 +3,7 @@ import { OLX_LOGO } from "../utilities/constants"
 import { Link, useNavigate } from "react-router-dom"
 import { checkLoginValidation } from "../utilities/validation"
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import Header from "./header";
 
 
 const Login = () =>{
@@ -26,12 +27,14 @@ const Login = () =>{
         .catch((error) => {
             const errorCode = error.code;
             const errorMessage = error.message;
-            setErrorMessage(errorCode+' '+errorMessage)
+            setErrorMessage('invalid email or password')
         });
 
     }
 
     return(
+        <div>
+            <Header/>
         <div className="flex justify-center items-center h-screen">
             <div className=" border-solid border-black  border-2 w-64 mx-auto pink rounded-lg">
                 <div>
@@ -49,6 +52,7 @@ const Login = () =>{
                     </div>
                 </div>
             </div>
+        </div>
         </div>
     )
 }

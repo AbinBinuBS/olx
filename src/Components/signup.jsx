@@ -1,90 +1,64 @@
 import React, { useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { checkSignupValidation } from "../utilities/validation";
-import { firestore, auth } from "../utilities/firebase"; // Import initialized services
+import { auth, firestore } from "../utilities/firebase";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { collection, addDoc } from "firebase/firestore"; // Import collection and addDoc functions
+import { collection, addDoc } from "firebase/firestore";
 import { OLX_LOGO } from "../utilities/constants";
+import Header from "./header";
 
 const Signup = () => {
   const [errorMessage, setErrorMessage] = useState(null);
-  const name = useRef(null);
-  const email = useRef(null);
-  const phone = useRef(null);
-  const password = useRef(null);
+  const nameRef = useRef(null);
+  const emailRef = useRef(null);
+  const phoneRef = useRef(null);
+  const passwordRef = useRef(null);
   const navigate = useNavigate();
 
-  const handleSignupValidation = async () => {
-    const emailValue = email.current.value;
+  const handleSignup = async () => {
+    const nameValue = nameRef.current.value;
+    const emailValue = emailRef.current.value;
+    const phoneValue = phoneRef.current.value;
+    const passwordValue = passwordRef.current.value;
 
-    const message = checkSignupValidation(
-      name.current.value,
-      emailValue,
-      phone.current.value,
-      password.current.value
-    );
-
+    const message = checkSignupValidation(nameValue, emailValue, phoneValue, passwordValue);
     setErrorMessage(message);
     if (message) return;
 
     try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        emailValue,
-        password.current.value
-      );
-
+      const userCredential = await createUserWithEmailAndPassword(auth, emailValue, passwordValue);
       const user = userCredential.user;
-      await updateProfile(user, { displayName: name.current.value });
 
-      const { uid, displayName } = user;
-      const userData = { uid, email: emailValue, name: displayName };
+      await updateProfile(user, { displayName: nameValue });
 
-      // Add user data to Firestore
+      const userData = { uid: user.uid, email: emailValue, name: nameValue, phone: phoneValue };
       await addDoc(collection(firestore, "users"), userData);
 
-      navigate("/"); // Redirect to home or login page
+      navigate("/");
     } catch (error) {
-      setErrorMessage(error.message);
+      setErrorMessage('email already in use');
     }
   };
 
   return (
+    <div>
+      <Header/>
     <div className="flex justify-center items-center h-screen">
       <div className="border-solid border-black border-2 w-64 mx-auto pink rounded-lg">
         <div>
-          <img className="p-14" src={OLX_LOGO} alt="" />
+          <img className="p-14" src={OLX_LOGO} alt="OLX Logo" />
         </div>
         <div className="p-5">
           <h5>Username</h5>
-          <input
-            ref={name}
-            type="text"
-            className="border-b border-solid border-black outline-none"
-          />
+          <input ref={nameRef} type="text" className="border-b border-solid border-black outline-none" />
           <h5>Email</h5>
-          <input
-            ref={email}
-            type="email"
-            className="border-b border-solid border-black outline-none"
-          />
+          <input ref={emailRef} type="email" className="border-b border-solid border-black outline-none" />
           <h5>Phone</h5>
-          <input
-            ref={phone}
-            type="number"
-            className="border-b border-solid border-black outline-none"
-          />
+          <input ref={phoneRef} type="number" className="border-b border-solid border-black outline-none" />
           <h5>Password</h5>
-          <input
-            ref={password}
-            type="password"
-            className="border-b border-solid border-black outline-none"
-          />
+          <input ref={passwordRef} type="password" className="border-b border-solid border-black outline-none" />
           <p className="pt-3 text-red-600">{errorMessage}</p>
-          <button
-            onClick={handleSignupValidation}
-            className="bg-black text-white py-4 mt-5 px-20"
-          >
+          <button onClick={handleSignup} className="bg-black text-white py-4 mt-5 px-20">
             Signup
           </button>
           <div className="text-center">
@@ -92,6 +66,7 @@ const Signup = () => {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 };

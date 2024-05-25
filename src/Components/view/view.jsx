@@ -1,9 +1,9 @@
 import Footer from "../footer"
 import Header from "../header"
 import SubHeader from "../subHeader"
-import List from "./productListing"
+import Listing from "./Listing"
 
-const Home = () =>{
+const View = () =>{
     return(
         <div>
             <div>
@@ -12,15 +12,13 @@ const Home = () =>{
             <div>
                 <SubHeader/>
             </div>
-            <div>
-                <List/>
+            <div >
+                <Listing/>
             </div>
             <div>
                 <Footer/>
             </div>
-
-            
         </div>
     )
 }
-export default Home
+export default View
